@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Image Gallery</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+
+        /* Preview image */
+        .preview {
+            width: 400px;
+            height: 250px;
+            border: 2px solid #333;
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+
+        /* Thumbnail container */
+        .gallery {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* Thumbnail images */
+        .thumbnail {
+            width: 80px;
+            height: 60px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            object-fit: cover;
+            transition: border 0.3s;
+        }
+
+        /* Highlight selected thumbnail */
+        .thumbnail.active {
+            border: 3px solid #007BFF;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Interactive Image Gallery</h2>
+
+    <!-- Large Preview Area -->
+    <img id="previewImage" class="preview" src="https://i0.wp.com/post.healthline.com/wp-content/uploads/2021/05/apples-1296x728-header.jpg?w=1155&h=1528" alt="Preview Image">
+
+    <!-- Thumbnails -->
+    <div class="gallery">
+        <img class="thumbnail active" src="https://i0.wp.com/post.healthline.com/wp-content/uploads/2021/05/apples-1296x728-header.jpg?w=1155&h=1528" onclick="changeImage(this)">
+        <img class="thumbnail" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwpqBfQKmgfeAnChsKDwYMgFtuakkRSlJQ4g&s" onclick="changeImage(this)">
+        <img class="thumbnail" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsgEeLBzUJluIQYm6aM1T8wvBruWKn3pK_wA&s" onclick="changeImage(this)">
+        <img class="thumbnail" src="https://motherspet.com/blogs/wp-content/uploads/2025/07/List-of-Seasonal-Fruits-Vegetables-in-India.jpg" onclick="changeImage(this)">
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function changeImage(thumbnail) {
+            // Change preview image
+            document.getElementById("previewImage").src = thumbnail.src;
+
+            // Remove active class from all thumbnails
+            let thumbnails = document.getElementsByClassName("thumbnail");
+            for (let i = 0; i < thumbnails.length; i++) {
+                thumbnails[i].classList.remove("active");
+            }
+
+            // Add active class to selected thumbnail
+            thumbnail.classList.add("active");
+        }
+    </script>
+
+</body>
+</html>

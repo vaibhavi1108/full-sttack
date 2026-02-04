@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Character Counter</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .warning {
+            color: red;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Live Character Counter</h2>
+
+        <textarea id="textInput" maxlength="100" placeholder="Type here..."></textarea>
+
+        <p id="counter">0 / 100 characters</p>
+    </div>
+
+    <script>
+        const textInput = document.getElementById("textInput");
+        const counter = document.getElementById("counter");
+        const maxChars = 100;
+
+        textInput.addEventListener("input", function () {
+            const length = textInput.value.length;
+            counter.textContent = length + " / " + maxChars + " characters";
+
+            if (length === maxChars) {
+                counter.classList.add("warning");
+            } else {
+                counter.classList.remove("warning");
+            }
+        });
+    </script>
+
+</body>
+</html>

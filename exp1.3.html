@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+          margin: 0;
+            font-family: Arial;
+            background-color: #0e0d0d;
+            color: white;
+        }
+        .header {
+            padding: 15px;
+            font-size: 22px;
+        }
+        button {
+            float: right;
+            padding: 5px 10px;
+            background-color: #85ba9e;
+            
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
+        }
+        .box1 {
+            border: 1px solid rgb(99, 14, 209);
+            background-color: rgb(161, 161, 31);
+            color: rgb(230, 238, 231);
+            padding: 40px;
+            text-align: center;
+            font-size: 20px;
+        }
+                .box2 {
+            border: 1px solid rgb(122, 67, 91);
+            background-color: rgb(36, 122, 93);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            font-size: 20px;
+        }
+                .box3 {
+            border: 1px solid gray;
+            background-color: rgb(21, 116, 133);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            font-size: 20px;
+        }
+                .box {
+            border: 1px solid gray;
+            background-color: rgb(59, 32, 113);
+            color: white;
+            padding: 25px;
+            height: 500px;
+        
+            text-align: center;
+            font-size: 20px;
+        }
+        .nav {
+            grid-row: span 2;
+        }
+        .light {
+            background-color: rgb(255, 255, 255);
+            color: rgb(140, 14, 64);
+        }
+    </style>
+</head>
+
+<body id="body">
+
+    <div class="header">
+        Admin Dashboard
+        <button onclick="changeTheme()">Light Mode</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="box nav">Navigation</div>
+        <div class="box1">Analytics</div>
+        <div class="box2">Users</div>
+        <div class="box3">Settings</div>
+    </div>
+
+    <script>
+        function changeTheme() {
+            document.getElementById("body").classList.toggle("light");
+        }
+    </script>
+
+</body>
+</html>

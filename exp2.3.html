@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SVG Drawing Tool</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
+    background: #f2f2f2;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  button, select, input {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  svg {
+    width: 100vw;
+    height: 80vh;
+    border: 2px solid #333;
+    background: white;
+    cursor: crosshair;
+  }
+</style>
+</head>
+
+<body>
+
+<h2>SVG Drawing Tool</h2>
+
+<div class="toolbar">
+  <select id="shape">
+    <option value="line">Line</option>
+    <option value="rect">Rectangle</option>
+    <option value="circle">Circle</option>
+  </select>
+
+  <input type="color" id="color" value="#000000">
+  <button onclick="undo()">Undo</button>
+</div>
+
+<svg id="svgCanvas"></svg>
+
+<script>
+  const svg = document.getElementById("svgCanvas");
+  const shapeSelect = document.getElementById("shape");
+  const colorPicker = document.getElementById("color");
+
+  let startX, startY;
+  let currentShape = null;
+  let shapes = [];
+
+  function getMousePosition(evt) {
+    const pt = svg.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  svg.addEventListener("mousedown", (e) => {
+    const pos = getMousePosition(e);
+    startX = pos.x;
+    startY = pos.y;
+
+    const shapeType = shapeSelect.value;
+    const color = colorPicker.value;
+    
+    if (shapeType === "line") {
+      currentShape = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      currentShape.setAttribute("x1", startX);
+      currentShape.setAttribute("y1", startY);
+      currentShape.setAttribute("x2", startX);
+      currentShape.setAttribute("y2", startY);
+      currentShape.setAttribute("stroke", color);
+      currentShape.setAttribute("stroke-width", 2);
+    }
+
+    if (shapeType === "rect") {
+      currentShape = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      currentShape.setAttribute("x", startX);
+      currentShape.setAttribute("y", startY);
+      currentShape.setAttribute("width", 0);
+      currentShape.setAttribute("height", 0);
+      currentShape.setAttribute("fill", "none");
+      currentShape.setAttribute("stroke", color);
+      currentShape.setAttribute("stroke-width", 2);
+    }
+
+    if (shapeType === "circle") {
+      currentShape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      currentShape.setAttribute("cx", startX);
+      currentShape.setAttribute("cy", startY);
+      currentShape.setAttribute("r", 0);
+      currentShape.setAttribute("fill", "none");
+      currentShape.setAttribute("stroke", color);
+      currentShape.setAttribute("stroke-width", 2);
+    }
+
+    svg.appendChild(currentShape);
+    shapes.push(currentShape);
+  });
+
+  svg.addEventListener("mousemove", (e) => {
+    if (!currentShape) return;
+
+    const pos = getMousePosition(e);
+
+    if (currentShape.tagName === "line") {
+      currentShape.setAttribute("x2", pos.x);
+      currentShape.setAttribute("y2", pos.y);
+    }
+
+    if (currentShape.tagName === "rect") {
+      currentShape.setAttribute("width", Math.abs(pos.x - startX));
+      currentShape.setAttribute("height", Math.abs(pos.y - startY));
+    }
+
+    if (currentShape.tagName === "circle") {
+      const radius = Math.sqrt(
+        Math.pow(pos.x - startX, 2) + Math.pow(pos.y - startY, 2)
+      );
+      currentShape.setAttribute("r", radius);
+    }
+  });
+
+  svg.addEventListener("mouseup", () => {
+    currentShape = null;
+  });
+
+  function undo() {
+    const last = shapes.pop();
+    if (last) svg.removeChild(last);
+  }
+</script>
+
+</body>
+</html>
