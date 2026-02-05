@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conditional Rendering - Login Status</title>
+
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .card {
+            background-color: white;
+            padding: 30px;
+            width: 300px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 8px gray;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    function LoginStatus() {
+        const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+        return (
+            <div className="card">
+
+                {/* Ternary Operator */}
+                <h2>
+                    {isLoggedIn ? "Welcome, User" : "Please Login"}
+                </h2>
+
+                {/* && Operator */}
+                {isLoggedIn && <p>You are successfully logged in.</p>}
+
+                <button onClick={() => setIsLoggedIn(!isLoggedIn)}>
+                    {isLoggedIn ? "Logout" : "Login"}
+                </button>
+
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<LoginStatus />);
+
+</script>
+
+</body>
+</html>

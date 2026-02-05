@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile Page - Component Composition</title>
+
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .profile {
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px gray;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    // Header Component
+    function Header() {
+        return (
+            <div className="header">
+                <h1>User Profile Page</h1>
+            </div>
+        );
+    }
+
+    // ProfileDetails Component (receives props)
+    function ProfileDetails(props) {
+        return (
+            <div className="profile">
+                <h2>Profile Details</h2>
+                <p><strong>Name:</strong> {props.name}</p>
+                <p><strong>Email:</strong> {props.email}</p>
+                <p><strong>Department:</strong> {props.department}</p>
+            </div>
+        );
+    }
+
+    // Footer Component
+    function Footer() {
+        return (
+            <div className="footer">
+                <p>© 2026 Profile App</p>
+            </div>
+        );
+    }
+
+    // Parent Component (App)
+    function App() {
+        const user = {
+            name: "Vaibhavi Goel",
+            email: "vaibhavi@example.com",
+            department: "Computer Science"
+        };
+
+        return (
+            <div>
+                <Header />
+                <ProfileDetails 
+                    name={user.name}
+                    email={user.email}
+                    department={user.department}
+                />
+                <Footer />
+            </div>
+        );
+    }
+
+    // Render App
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+
+</script>
+
+</body>
+</html>

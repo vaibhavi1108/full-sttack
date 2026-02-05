@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OOP Inheritance in React</title>
+
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      width: 250px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #007bff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Person – Student – Teacher (OOP with React)</h2>
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    
+    class Person {
+      constructor(name, age) {
+        this.name = name;
+        this.age = age;
+      }
+
+      getDetails() {
+        return `Name: ${this.name}, Age: ${this.age}`;
+      }
+    }
+
+    
+    class Student extends Person {
+      constructor(name, age, course) {
+        super(name, age);
+        this.course = course;
+      }
+
+      
+      getDetails() {
+        return `Student: ${this.name}, Age: ${this.age}, Course: ${this.course}`;
+      }
+    }
+
+    
+    class Teacher extends Person {
+      constructor(name, age, subject) {
+        super(name, age);
+        this.subject = subject;
+      }
+
+      
+      getDetails() {
+        return `Teacher: ${this.name}, Age: ${this.age}, Subject: ${this.subject}`;
+      }
+    }
+
+    
+    function App() {
+
+      
+      const people = [
+        new Student("Amit", 20, "Computer Science"),
+        new Teacher("Dr. Sharma", 45, "Mathematics"),
+        new Student("Neha", 21, "Information Technology")
+      ];
+
+      return (
+        <div className="container">
+          {people.map((person, index) => (
+            <div className="card" key={index}>
+              <h3>{person.constructor.name}</h3>
+              <p>{person.getDetails()}</p>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+
+  </script>
+</body>
+</html>
