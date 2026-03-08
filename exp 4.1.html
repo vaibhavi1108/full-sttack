@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Employee Management System</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        #terminal-output {
+            flex-grow: 1;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        #input-line {
+            display: flex;
+        }
+        #prompt-symbol {
+            margin-right: 10px;
+        }
+        #cmd {
+            background: transparent;
+            color: #00ff00;
+            border: none;
+            outline: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal-output"></div>
+    <div id="input-line">
+        <span id="prompt-symbol">></span>
+        <input type="text" id="cmd" autocomplete="off" autofocus>
+    </div>
+
+
+    <script>
+        const terminal = document.getElementById('terminal-output');
+        const cmdInput = document.getElementById('cmd');
+       
+        let employees = JSON.parse(localStorage.getItem('employeesData')) || [];
+        let state = 'menu';
+        let tempEmp = {};
+
+
+        function print(text) {
+            terminal.textContent += text + '\n';
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+
+        function save() {
+            localStorage.setItem('employeesData', JSON.stringify(employees));
+        }
+
+
+        function displayMenu() {
+            print('\n=== Employee Management System ===');
+            print('1. Add Employee');
+            print('2. View Employees');
+            print('3. Update Employee');
+            print('4. Delete Employee');
+            print('5. Exit');
+            print('Select an option (1-5):');
+            state = 'menu';
+        }
+
+
+        displayMenu();
+
+
+        cmdInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const input = this.value.trim();
+                print('> ' + input);
+                this.value = '';
+                handleInput(input);
+            }
+        });
+
+
+        function handleInput(input) {
+            if (state === 'menu') {
+                switch (input) {
+                    case '1':
+                        print('Enter Employee ID:');
+                        state = 'add_id';
+                        break;
+                    case '2':
+                        if (employees.length === 0) {
+                            print('No employees found.');
+                        } else {
+                            print('\n--- Employee List ---');
+                            employees.forEach(e => print(`ID: ${e.id} | Name: ${e.name} | Role: ${e.role}`));
+                            print('---------------------');
+                        }
+                        displayMenu();
+                        break;
+                    case '3':
+                        print('Enter Employee ID to update:');
+                        state = 'update_id';
+                        break;
+                    case '4':
+                        print('Enter Employee ID to delete:');
+                        state = 'delete_id';
+                        break;
+                    case '5':
+                        print('System exited. Refresh the browser to restart.');
+                        cmdInput.disabled = true;
+                        break;
+                    default:
+                        print('Invalid choice. Please select 1-5.');
+                        displayMenu();
+                }
+            } else if (state === 'add_id') {
+                if (!input) { print('ID cannot be blank. Enter ID:'); return; }
+                if (employees.some(e => e.id === input)) { print('ID already exists. Enter unique ID:'); return; }
+                tempEmp.id = input;
+                print('Enter Employee Name:');
+                state = 'add_name';
+            } else if (state === 'add_name') {
+                if (!input) { print('Name cannot be blank. Enter Name:'); return; }
+                tempEmp.name = input;
+                print('Enter Employee Role:');
+                state = 'add_role';
+            } else if (state === 'add_role') {
+                if (!input) { print('Role cannot be blank. Enter Role:'); return; }
+                tempEmp.role = input;
+                employees.push({ ...tempEmp });
+                save();
+                print('Employee successfully added.');
+                displayMenu();
+            } else if (state === 'update_id') {
+                const idx = employees.findIndex(e => e.id === input);
+                if (idx === -1) {
+                    print('Employee ID not found.');
+                    displayMenu();
+                } else {
+                    tempEmp.targetIndex = idx;
+                    print('Enter New Name:');
+                    state = 'update_name';
+                }
+            } else if (state === 'update_name') {
+                if (!input) { print('Name cannot be blank. Enter New Name:'); return; }
+                employees[tempEmp.targetIndex].name = input;
+                print('Enter New Role:');
+                state = 'update_role';
+            } else if (state === 'update_role') {
+                if (!input) { print('Role cannot be blank. Enter New Role:'); return; }
+                employees[tempEmp.targetIndex].role = input;
+                save();
+                print('Employee successfully updated.');
+                displayMenu();
+            } else if (state === 'delete_id') {
+                const idx = employees.findIndex(e => e.id === input);
+                if (idx === -1) {
+                    print('Employee ID not found.');
+                } else {
+                    employees.splice(idx, 1);
+                    save();
+                    print('Employee successfully deleted.');
+                }
+                displayMenu();
+            }
+        }
+    </script>
+</body>
+</html>

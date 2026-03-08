@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concurrent Ticket Booking</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f4f7;
+    text-align: center;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+#seats {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.seat {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    line-height: 60px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+
+.available { background: #28a745; }
+.locked { background: #ffc107; color:black; }
+.booked { background: #dc3545; }
+.selected { border: 3px solid black; }
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover{
+    background:#0056b3;
+}
+
+#log {
+    background: black;
+    color: #00ff88;
+    padding: 10px;
+    height: 150px;
+    overflow-y: auto;
+    font-family: monospace;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎟 Concurrent Ticket Booking System</h2>
+
+<div id="seats"></div>
+
+<button onclick="loadSeats()">Refresh Seats</button>
+<button onclick="lockSeat()">Lock Seat</button>
+<button onclick="confirmBooking()">Confirm Booking</button>
+<button onclick="cancelSeat()">Cancel Lock</button>
+
+<div id="log"></div>
+
+<script>
+
+const API = "http://localhost:3000";
+let selectedSeat = null;
+
+// log messages
+function log(msg) {
+    const logBox = document.getElementById("log");
+    logBox.innerText += JSON.stringify(msg, null, 2) + "\n\n";
+    logBox.scrollTop = logBox.scrollHeight;
+}
+
+// load seats
+async function loadSeats() {
+    try {
+
+        const res = await fetch(`${API}/seats`);
+        const seats = await res.json();
+
+        const container = document.getElementById("seats");
+        container.innerHTML = "";
+
+        seats.forEach(seat => {
+
+            const div = document.createElement("div");
+
+            div.className = "seat " + seat.status;
+            div.innerText = seat.id;
+
+            // prevent selecting booked seats
+            if(seat.status !== "booked"){
+                div.onclick = () => {
+                    selectedSeat = seat.id;
+                    loadSeats();
+                };
+            }
+
+            if (seat.id === selectedSeat)
+                div.classList.add("selected");
+
+            container.appendChild(div);
+
+        });
+
+    } catch (err) {
+        log({error:"Failed to load seats"});
+    }
+}
+
+// lock seat
+async function lockSeat() {
+
+    if (!selectedSeat) return alert("Select seat first");
+
+    try{
+        const res = await fetch(`${API}/lock/${selectedSeat}`, {
+            method: "POST"
+        });
+
+        log(await res.json());
+        loadSeats();
+    }
+    catch(err){
+        log({error:"Lock failed"});
+    }
+}
+
+// confirm booking
+async function confirmBooking() {
+
+    if (!selectedSeat) return alert("Select seat first");
+
+    try{
+        const res = await fetch(`${API}/book/${selectedSeat}`, {
+            method: "POST"
+        });
+
+        log(await res.json());
+        loadSeats();
+    }
+    catch(err){
+        log({error:"Booking failed"});
+    }
+}
+
+// cancel seat lock
+async function cancelSeat() {
+
+    if (!selectedSeat) return alert("Select seat first");
+
+    try{
+        const res = await fetch(`${API}/unlock/${selectedSeat}`, {
+            method: "POST"
+        });
+
+        log(await res.json());
+        loadSeats();
+    }
+    catch(err){
+        log({error:"Unlock failed"});
+    }
+}
+
+// initial load
+loadSeats();
+
+</script>
+
+</body>
+</html>

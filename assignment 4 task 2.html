@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management</title>
+</head>
+<body>
+
+<h2>Student Management System</h2>
+
+<h3>Add Student</h3>
+<input type="number" id="id" placeholder="ID"><br><br>
+<input type="text" id="name" placeholder="Name"><br><br>
+<input type="number" id="age" placeholder="Age"><br><br>
+<input type="text" id="course" placeholder="Course"><br><br>
+
+<button onclick="addStudent()">Add Student</button>
+<button onclick="getStudents()">View Students</button>
+
+<h3>Students List</h3>
+<ul id="studentList"></ul>
+
+<script>
+
+function addStudent(){
+    const student = {
+        id: document.getElementById("id").value,
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        course: document.getElementById("course").value
+    };
+
+    fetch("http://localhost:3000/students", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(student)
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Student Added!");
+        getStudents();
+    });
+}
+
+function getStudents(){
+    fetch("http://localhost:3000/students")
+    .then(res => res.json())
+    .then(data => {
+
+        const list = document.getElementById("studentList");
+        list.innerHTML = "";
+
+        data.forEach(student => {
+            const li = document.createElement("li");
+            li.innerHTML = 
+            `ID: ${student.id} | Name: ${student.name} | Age: ${student.age} | Course: ${student.course}
+             <button onclick="deleteStudent(${student.id})">Delete</button>`;
+            list.appendChild(li);
+        });
+    });
+}
+
+function deleteStudent(id){
+    fetch(`http://localhost:3000/students/${id}`, {
+        method: "DELETE"
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Student Deleted");
+        getStudents();
+    });
+}
+
+</script>
+
+</body>
+</html>
